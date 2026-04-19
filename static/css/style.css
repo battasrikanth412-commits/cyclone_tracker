@@ -1,0 +1,863 @@
+/* 
+ * HUD/Video Game Cyberpunk CSS Overhaul
+ */
+:root {
+    --core-cyan: #0ff;
+    --core-cyan-glow: rgba(0, 255, 255, 0.4);
+    --core-magenta: #f0f;
+    --core-magenta-glow: rgba(255, 0, 255, 0.5);
+    --danger-red: #ff3333;
+    --warning-yellow: #fcee0a;
+    --bg-deep: #050508;
+    --panel-bg: rgba(10, 15, 25, 0.85);
+    --hex-bg: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0L40 11.5v23L20 46 0 34.5v-23z" fill="none" stroke="rgba(0,255,255,0.03)" stroke-width="1"/></svg>');
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--core-cyan);
+    background-color: var(--bg-deep);
+    background-image: radial-gradient(circle at 50% 50%, rgba(0, 50, 100, 0.15) 0%, rgba(0, 0, 0, 1) 100%), var(--hex-bg);
+    background-size: 100% 100%, 40px 40px;
+    background-attachment: fixed;
+    overflow: hidden;
+}
+
+/* CRT Scanlines Layer */
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 6px 100%;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* Particles Background */
+.particles-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.app-container {
+    height: 100vh;
+    position: relative;
+    z-index: 10;
+}
+
+/* Futuristic HUD Panel */
+.hud-panel {
+    background: linear-gradient(135deg, rgba(10, 15, 25, 0.9), rgba(5, 8, 12, 0.95));
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-top: 2px solid var(--core-cyan);
+    border-bottom: 2px solid var(--core-cyan);
+    box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.05), 0 0 25px rgba(0, 0, 0, 0.9), 0 10px 20px rgba(0, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    padding: 24px;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.hud-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 255, 0.02) 2px,
+        rgba(0, 255, 255, 0.02) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hud-panel::after {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(to bottom, transparent, rgba(0, 255, 255, 0.15), transparent);
+    animation: slow-scan 6s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes slow-scan {
+    0% { top: -100px; }
+    100% { top: 120%; }
+}
+
+.hud-panel > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Panel Corner Brackets */
+.hud-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--core-cyan);
+}
+
+.hud-corner.top-left {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.hud-corner.top-right {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.hud-corner.bottom-left {
+    bottom: -1px;
+    left: -1px;
+    border-right: none;
+    border-top: none;
+}
+
+.hud-corner.bottom-right {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+}
+
+/* Glitch Header */
+.hud-header {
+    margin-bottom: 20px;
+}
+
+.glitch-text {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: #fff;
+    text-shadow: 0 0 15px var(--core-cyan), 0 0 30px var(--core-cyan);
+    position: relative;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Glitch Pseudo Animation */
+.glitch-text::before,
+.glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+}
+
+.glitch-text::before {
+    left: 2px;
+    text-shadow: -2px 0 var(--core-magenta);
+    animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+    left: -2px;
+    text-shadow: -2px 0 var(--core-cyan);
+    animation: glitch-anim2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+    0% {
+        clip-path: inset(10% 0 80% 0);
+    }
+
+    20% {
+        clip-path: inset(80% 0 5% 0);
+    }
+
+    40% {
+        clip-path: inset(40% 0 20% 0);
+    }
+
+    60% {
+        clip-path: inset(90% 0 2% 0);
+    }
+
+    80% {
+        clip-path: inset(15% 0 50% 0);
+    }
+
+    100% {
+        clip-path: inset(5% 0 70% 0);
+    }
+}
+
+@keyframes glitch-anim2 {
+    0% {
+        clip-path: inset(5% 0 80% 0);
+    }
+
+    20% {
+        clip-path: inset(25% 0 10% 0);
+    }
+
+    40% {
+        clip-path: inset(10% 0 40% 0);
+    }
+
+    60% {
+        clip-path: inset(80% 0 5% 0);
+    }
+
+    80% {
+        clip-path: inset(55% 0 30% 0);
+    }
+
+    100% {
+        clip-path: inset(35% 0 60% 0);
+    }
+}
+
+.cyber-divider {
+    border-top: 1px dashed var(--core-cyan);
+    opacity: 0.5;
+    margin: 10px 0;
+}
+
+/* Badges */
+.cyber-badge {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border: 1px solid;
+    letter-spacing: 1px;
+}
+
+.active-badge {
+    border-color: var(--core-cyan);
+    color: var(--core-cyan);
+    box-shadow: 0 0 5px var(--core-cyan-glow);
+}
+
+.threat-badge {
+    border-color: var(--danger-red);
+    color: var(--danger-red);
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+.pulse-fast {
+    animation: pulseWarning 1s infinite alternate;
+}
+
+@keyframes pulseWarning {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0.3;
+    }
+}
+
+/* Inputs and Sliders */
+.cyber-label-header {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    color: #fff;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+    text-shadow: 0 0 4px var(--core-cyan);
+}
+
+.cyber-input-group {
+    position: relative;
+}
+
+.cyber-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-left: 3px solid var(--core-cyan);
+    color: #0ff;
+    padding: 10px 15px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    outline: none;
+    transition: all 0.3s;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+}
+
+.cyber-input:focus {
+    border-color: var(--core-cyan);
+    border-left: 3px solid var(--core-magenta);
+    box-shadow: 0 0 15px var(--core-cyan-glow), inset 0 0 10px rgba(0,255,255,0.1);
+    background: rgba(0, 255, 255, 0.05);
+    color: #fff;
+}
+
+.slider-name {
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+.slider-val {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--core-cyan);
+    font-size: 0.8rem;
+    text-shadow: 0 0 3px var(--core-cyan);
+}
+
+.cyber-subtitle {
+    font-size: 0.7rem;
+    color: rgba(0, 255, 255, 0.5);
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* Extreme Custom Range Input */
+.cyber-range {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+    padding: 10px 0;
+}
+
+.cyber-range::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 255, 0.5), rgba(255, 0, 255, 0.5));
+    border-radius: 3px;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+.cyber-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 24px;
+    width: 12px;
+    background: #fff;
+    margin-top: -10px;
+    box-shadow: 0 0 15px var(--core-cyan), 0 0 5px var(--core-magenta);
+    cursor: pointer;
+    border-radius: 2px;
+    border: 2px solid var(--core-magenta);
+    transition: all 0.2s;
+}
+
+.cyber-range:hover::-webkit-slider-thumb {
+    background: var(--core-cyan);
+    box-shadow: 0 0 25px var(--core-cyan), 0 0 15px var(--core-magenta);
+    border-color: #fff;
+    transform: scale(1.2);
+}
+
+/* Cyber Button */
+.cyber-btn {
+    position: relative;
+    background: rgba(0, 255, 255, 0.05);
+    color: #fff;
+    border: 2px solid var(--core-cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 1.2rem;
+    padding: 15px 20px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 8px #fff;
+    box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.3), 0 0 15px rgba(0, 255, 255, 0.2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 1;
+}
+
+.cyber-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 0%; height: 100%;
+    background: var(--core-cyan);
+    z-index: -1;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cyber-btn:hover::before {
+    width: 100%;
+}
+
+.cyber-btn:hover {
+    color: #000;
+    text-shadow: none;
+    box-shadow: 0 0 30px var(--core-cyan);
+    border-color: #fff;
+}
+
+.cyber-btn:active {
+    transform: scale(0.98);
+}
+
+/* Map VFX Area */
+.map-container {
+    overflow: hidden;
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    border-radius: 8px;
+    animation: map-throb 4s infinite alternate;
+}
+
+@keyframes map-throb {
+    0% {
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.1), inset 0 0 20px rgba(0, 255, 255, 0.2);
+        border-color: rgba(0, 255, 255, 0.3);
+    }
+    100% {
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 40px rgba(0, 255, 255, 0.4);
+        border-color: var(--core-cyan);
+    }
+}
+
+#map {
+    z-index: 1;
+    filter: contrast(1.2) sepia(0.2) hue-rotate(180deg) saturate(1.5);
+    background: #020205 !important;
+}
+
+/* Map Frame Accents */
+.reticle {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--core-cyan);
+    z-index: 900;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.reticle.top-left {
+    top: 20px;
+    left: 20px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.reticle.top-right {
+    top: 20px;
+    right: 20px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.reticle.bottom-left {
+    bottom: 20px;
+    left: 20px;
+    border-right: none;
+    border-top: none;
+}
+
+.reticle.bottom-right {
+    bottom: 20px;
+    right: 20px;
+    border-left: none;
+    border-top: none;
+}
+
+/* Grid Overlay on Map */
+.cyber-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 800;
+    pointer-events: none;
+}
+
+/* Center Crosshair */
+.crosshair-target {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 50%;
+    z-index: 800;
+    pointer-events: none;
+}
+
+.crosshair-target::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 24px;
+    width: 1px;
+    height: 70px;
+    background: rgba(0, 255, 255, 0.3);
+}
+
+.crosshair-target::after {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: -10px;
+    width: 70px;
+    height: 1px;
+    background: rgba(0, 255, 255, 0.3);
+}
+
+/* Map Status Banner */
+.tactical-status {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--core-cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    z-index: 1000;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--core-cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--core-cyan);
+}
+
+.blink-slow {
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.2;
+    }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--core-cyan);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #fff;
+}
+
+.pulse-marker {
+    background: var(--core-magenta) !important;
+    border-radius: 50%;
+    box-shadow: 0 0 5px var(--core-magenta), 0 0 15px var(--core-magenta);
+    border: 2px solid #fff;
+    animation: radar-pulse 2s infinite;
+}
+
+@keyframes radar-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 20px rgba(255, 0, 255, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 255, 0);
+    }
+}
+
+.text-cyan {
+    color: var(--core-cyan) !important;
+}
+
+/* =========================================
+   HURRICANE VFX ENGINE (High-End Animations) 
+   ========================================= */
+
+/* Main Container allows clicks to pass */
+.vortex-container {
+    pointer-events: none;
+    z-index: 1000 !important;
+}
+
+/* The Glowing Rotating Core */
+.hurricane-vortex {
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(0, 255, 255, 0.7) 20%, transparent 70%);
+    box-shadow: 0 0 40px rgba(0, 255, 255, 1), inset 0 0 30px rgba(255, 255, 255, 0.8);
+    animation: spin-vortex 0.5s linear infinite, throb 1.2s ease-in-out infinite;
+}
+
+/* Outer cloud swirl layers */
+.hurricane-vortex::before,
+.hurricane-vortex::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    border: 5px solid transparent;
+}
+
+/* Inner swirl */
+.hurricane-vortex::before {
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    border-top-color: rgba(255, 255, 255, 0.8);
+    border-bottom-color: rgba(0, 255, 255, 0.8);
+    animation: spin-vortex 1s linear infinite reverse;
+}
+
+/* Outer swirl */
+.hurricane-vortex::after {
+    top: -60%;
+    left: -60%;
+    width: 220%;
+    height: 220%;
+    border-left-color: rgba(0, 255, 255, 0.5);
+    border-right-color: rgba(255, 0, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    animation: spin-vortex 1.8s linear infinite;
+}
+
+@keyframes spin-vortex {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.animated-trajectory {
+    animation: dash 2s linear infinite;
+    filter: drop-shadow(0 0 5px var(--core-magenta)) drop-shadow(0 0 10px var(--core-magenta));
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: -50;
+    }
+}
+
+@keyframes throb {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.3);
+        opacity: 1;
+        box-shadow: 0 0 60px rgba(0, 255, 255, 1);
+    }
+}
+
+/* Localized Raining Weather Effect */
+.rain-field {
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.rain-drop {
+    position: absolute;
+    width: 2px;
+    height: 30px;
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.9));
+    animation: rain-fall 0.3s linear infinite;
+}
+
+.rain-drop:nth-child(1) {
+    left: 15%;
+    animation-delay: 0.1s;
+    animation-duration: 0.25s;
+}
+
+.rain-drop:nth-child(2) {
+    left: 35%;
+    animation-delay: 0.3s;
+    animation-duration: 0.35s;
+}
+
+.rain-drop:nth-child(3) {
+    left: 55%;
+    animation-delay: 0.05s;
+    animation-duration: 0.2s;
+}
+
+.rain-drop:nth-child(4) {
+    left: 75%;
+    animation-delay: 0.2s;
+    animation-duration: 0.4s;
+}
+
+.rain-drop:nth-child(5) {
+    left: 25%;
+    animation-delay: 0.15s;
+}
+
+.rain-drop:nth-child(6) {
+    left: 65%;
+    animation-delay: 0.25s;
+}
+
+.rain-drop:nth-child(7) {
+    left: 45%;
+    height: 40px;
+    animation-delay: 0s;
+}
+
+.rain-drop:nth-child(8) {
+    left: 85%;
+    animation-delay: 0.12s;
+}
+
+@keyframes rain-fall {
+    0% {
+        transform: translateY(-50px) rotate(15deg);
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(220px) rotate(15deg);
+        opacity: 0;
+    }
+}
+
+/* Extreme 2-Second Glitch Shake Effect */
+.shake-intense {
+    animation: rapid-glitch 0.15s infinite linear;
+}
+
+@keyframes rapid-glitch {
+    0% {
+        transform: translate(5px, -5px) rotate(1.5deg);
+        filter: hue-rotate(90deg) contrast(1.5);
+    }
+
+    25% {
+        transform: translate(-5px, 5px) rotate(-1.5deg);
+        filter: invert(0.15);
+    }
+
+    50% {
+        transform: translate(7px, 2px) rotate(0deg) scale(1.02);
+        filter: hue-rotate(-90deg) contrast(1.2);
+    }
+
+    75% {
+        transform: translate(-7px, -2px) rotate(2deg) scale(1.0);
+        filter: sepia(0.5);
+    }
+
+    100% {
+        transform: translate(3px, 0) rotate(-1deg);
+        filter: none;
+    }
+}
+
+/* News Slide-Out Panel */
+.news-panel {
+    position: absolute;
+    top: 50px;
+    right: -450px;
+    width: 400px;
+    background: rgba(2, 6, 12, 0.95);
+    border: 1px solid var(--core-cyan);
+    border-right: none;
+    box-shadow: -5px 0 20px rgba(0, 255, 255, 0.2);
+    padding: 20px;
+    color: #fff;
+    transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2000;
+    backdrop-filter: blur(10px);
+}
+
+.news-panel.open {
+    right: 0;
+}
+
+.news-header {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    border-bottom: 1px dotted var(--core-cyan);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    color: var(--core-cyan);
+    letter-spacing: 1px;
+}
+
+.news-content {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #ccffaa;
+    /* Tactical green text */
+    text-shadow: 0 0 5px rgba(200, 255, 170, 0.5);
+}
+
+.close-btn {
+    float: right;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--danger-red);
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StormAI // HUD Interface</title>
+    <!-- Sci-Fi Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body class="cyber-theme">
+
+    <!-- Global Animated Scanlines -->
+    <div class="scanlines"></div>
+    <!-- Particles Background -->
+    <div id="particles-js" class="particles-overlay"></div>
+
+    <div class="container-fluid app-container p-3 p-md-4">
+        <div class="row h-100 g-4">
+
+            <!-- Side HUD Panel -->
+            <div class="col-lg-3 col-md-4 h-100">
+                <div class="hud-panel h-100 d-flex flex-column">
+                    <!-- HUD Corners Decoration -->
+                    <div class="hud-corner top-left"></div>
+                    <div class="hud-corner top-right"></div>
+                    <div class="hud-corner bottom-left"></div>
+                    <div class="hud-corner bottom-right"></div>
+
+                    <!-- Header -->
+                    <header class="hud-header">
+                        <h1 class="glitch-text" data-text="StormAI_SYS">StormAI_SYS</h1>
+                        <div class="d-flex w-100 mt-2 gap-2">
+                            <div class="cyber-badge active-badge">UPLINK_ON</div>
+                            <div class="cyber-badge threat-badge pulse-fast">THREAT_LVL_MAX</div>
+                        </div>
+                    </header>
+                    <hr class="cyber-divider">
+
+                    <!-- Controls Form -->
+                    <form id="predictForm" class="hud-content flex-grow-1 overflow-auto pe-3 mt-3">
+
+                        <!-- ORIGIN DATABLOCK -->
+                        <div class="data-block">
+                            <div class="cyber-label-header">>_ ORIGIN COORDINATES [LAT/LNG]</div>
+                            <div class="row g-3 mt-1">
+                                <div class="col-6">
+                                    <div class="cyber-input-group">
+                                        <input type="number" step="any" class="cyber-input" id="latitude" required
+                                            value="15.0">
+                                        <div class="input-glow"></div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="cyber-input-group">
+                                        <input type="number" step="any" class="cyber-input" id="longitude" required
+                                            value="75.0">
+                                        <div class="input-glow"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- METEO DATABLOCK -->
+                        <div class="data-block mt-4">
+                            <div class="cyber-label-header">>_ METEOROLOGICAL DATA</div>
+
+                            <div class="slider-wrapper mt-3">
+                                <div class="d-flex justify-content-between align-items-end mb-1">
+                                    <span class="slider-name">WIND SPEED</span>
+                                    <span class="slider-val" id="wsVal">120 KM/H</span>
+                                </div>
+                                <input type="range" class="cyber-range" id="wind_speed" min="0" max="300" value="120"
+                                    oninput="document.getElementById('wsVal').innerText=this.value + ' KM/H'">
+                            </div>
+
+                            <div class="slider-wrapper mt-4">
+                                <div class="d-flex justify-content-between align-items-end mb-1">
+                                    <span class="slider-name">Pressure</span>
+                                    <span class="slider-val" id="prVal">980 hPa</span>
+                                </div>
+                                <input type="range" class="cyber-range" id="pressure" min="880" max="1050" value="980"
+                                    oninput="document.getElementById('prVal').innerText=this.value + ' hPa'">
+                            </div>
+
+                            <div class="slider-wrapper mt-4">
+                                <div class="d-flex justify-content-between align-items-end mb-1">
+                                    <span class="slider-name">Temperature</span>
+                                    <span class="slider-val" id="tempVal">28 °C</span>
+                                </div>
+                                <input type="range" class="cyber-range" id="temperature" min="15" max="40" value="28"
+                                    oninput="document.getElementById('tempVal').innerText=this.value + ' °C'">
+                            </div>
+
+                            <div class="slider-wrapper mt-4">
+                                <div class="d-flex justify-content-between align-items-end mb-1">
+                                    <span class="slider-name">Humidity</span>
+                                    <span class="slider-val" id="humVal">90 %</span>
+                                </div>
+                                <input type="range" class="cyber-range" id="humidity" min="0" max="100" value="90"
+                                    oninput="document.getElementById('humVal').innerText=this.value + ' %'">
+                            </div>
+
+                            <div class="slider-wrapper mt-4">
+                                <div class="d-flex justify-content-between align-items-end mb-1">
+                                    <span class="slider-name">Wind Direction</span>
+                                    <span class="slider-val" id="dirVal">45 °</span>
+                                </div>
+                                <input type="range" class="cyber-range" id="direction" min="0" max="360" value="45"
+                                    oninput="document.getElementById('dirVal').innerText=this.value + ' °'">
+                                <div class="cyber-subtitle mt-1">// LEGEND: 0=N, 90=E, 180=S, 270=W</div>
+                            </div>
+                        </div>
+
+                        <!-- SUBMIT -->
+                        <button type="submit" class="cyber-btn mt-5 w-100" id="predictBtn">
+                            <span class="btn-text">INITIATE SEQUENCE [AI_PREDICT]</span>
+                            <span class="btn-glitch-layer"></span>
+                            <div class="spinner-border spinner-border-sm text-cyan d-none" role="status"
+                                id="loadingSpinner"></div>
+                        </button>
+
+                        <div id="errorBox" class="cyber-error mt-3 d-none"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Dashboard Main Map -->
+            <div class="col-lg-9 col-md-8 h-100">
+                <div class="hud-panel h-100 w-100 p-1 position-relative map-container">
+                    <!-- Reticles Decor -->
+                    <div class="reticle top-left"></div>
+                    <div class="reticle top-right"></div>
+                    <div class="reticle bottom-left"></div>
+                    <div class="reticle bottom-right"></div>
+
+                    <div id="map" class="h-100 w-100 map-vfx"></div>
+
+                    <!-- Grid Overlay -->
+                    <div class="cyber-grid-overlay"></div>
+
+                    <!-- Tactical Status Box -->
+                    <div class="tactical-status d-flex align-items-center">
+                        <div class="status-dot blink-slow" id="statusDot"></div>
+                        <span class="ms-2" id="statusText">AWAITING COMM...</span>
+                    </div>
+
+                    <!-- Center Crosshair Target -->
+                    <div class="crosshair-target"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- News Reporter Slide-out -->
+    <div class="news-panel" id="newsPanel">
+        <div class="news-header">
+            <span class="status-dot blink-slow d-inline-block me-1"></span> LIVE TACTICAL REPORT
+            <span class="close-btn" onclick="closeNews()">[X]</span>
+        </div>
+        <div class="news-content" id="newsContent"></div>
+    </div>
+
+    <!-- Particles.js & Leaflet & Custom JS -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="/static/js/map.js"></script>
+
+    <!-- Initialize Particles -->
+    <script>
+        particlesJS('particles-js', {
+            "particles": {
+                "number": { "value": 150, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": ["#00ffff", "#ff00ff", "#ffffff"] },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 2, "opacity_min": 0.1, "sync": false } },
+                "size": { "value": 3, "random": true, "anim": { "enable": true, "speed": 40, "size_min": 0.1, "sync": false } },
+                "line_linked": { "enable": true, "distance": 150, "color": "#00ffff", "opacity": 0.2, "width": 1 },
+                "move": { "enable": true, "speed": 4, "direction": "top-right", "random": true, "straight": false, "out_mode": "out", "bounce": false, "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                "modes": { "grab": { "distance": 200, "line_linked": { "opacity": 0.8 } }, "push": { "particles_nb": 4 } }
+            },
+            "retina_detect": true
+        });
+        console.log('particles.js loaded - cyber mode engaged');
+    </script>
+</body>
+
+</html>
